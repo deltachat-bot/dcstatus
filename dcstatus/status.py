@@ -11,7 +11,14 @@ from .changelog import (
     get_latest_core,
 )
 from .constants import UNKNOWN
-from .stores import get_android_stores, get_desktop_stores, get_ios_stores
+from .stores import (
+    ANDROID_LINKS,
+    DESKTOP_LINKS,
+    IOS_LINKS,
+    get_android_stores,
+    get_desktop_stores,
+    get_ios_stores,
+)
 from .web import session
 
 STYLES = """
@@ -19,6 +26,10 @@ body {
     font-family: sans-serif;
     padding: 0.5em;
     text-align: center;
+}
+
+a {
+    color: inherit;
 }
 
 h2 {
@@ -186,6 +197,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
         if store == "F-Droid" and cls == "red":
             if android_github_release == latest_android:
                 cls = "yellow"
+        store = f'<a href="{ANDROID_LINKS[store]}">{store}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table>"
 
@@ -193,6 +205,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
     status += "<table><tr><th>Store</th><th>Version</th></tr>"
     for store, version in get_ios_stores(cache):
         cls = "green" if version == latest_ios else "red"
+        store = f'<a href="{IOS_LINKS[store]}">{store}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table>"
 
@@ -200,6 +213,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
     status += "<table><tr><th>Store</th><th>Version</th></tr>"
     for store, version in get_desktop_stores(cache):
         cls = "green" if version == latest_desktop else "red"
+        store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table>"
 

@@ -11,6 +11,26 @@ from cachelib import BaseCache
 from .constants import UNKNOWN
 from .web import get_html, session
 
+ANDROID_LINKS = {
+    "Play Store": "https://play.google.com/store/apps/details?id=chat.delta",
+    "F-Droid": "https://f-droid.org/packages/com.b44t.messenger/",
+    "Huawei App Gallery": "https://url.cloud.huawei.com/pXnbdjuOhW?shareTo=qrcode",
+    "Amazon": "https://www.amazon.com/dp/B0864PKVW3/",
+    "get.delta.chat": "https://get.delta.chat",
+    "GitHub Releases": "https://github.com/deltachat/deltachat-android/releases/latest",
+}
+IOS_LINKS = {"App Store": "https://apps.apple.com/us/app/delta-chat/id1459523234"}
+DESKTOP_LINKS = {
+    "Microsoft Store": (
+        "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk"
+        "?activetab=pivot:overviewtab"
+    ),
+    "Mac App Store": "https://apps.apple.com/us/app/delta-chat-desktop/id1462750497",
+    "Flathub": "https://flathub.org/apps/chat.delta.desktop",
+    "get.delta.chat": "https://get.delta.chat",
+    "GitHub Releases": "https://github.com/deltachat/deltachat-desktop/releases/latest",
+}
+
 
 def _get_from_cache(cache: BaseCache, key: str, func: Callable) -> tuple[str, str]:
     store = cache.get(key)
