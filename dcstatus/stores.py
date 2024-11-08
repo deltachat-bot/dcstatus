@@ -8,9 +8,8 @@ from typing import Callable
 from bs4 import BeautifulSoup
 from cachelib import BaseCache
 
+from .constants import UNKNOWN
 from .web import get_html, session
-
-UNKNOWN = "unknown"
 
 
 def _get_from_cache(cache: BaseCache, key: str, func: Callable) -> tuple[str, str]:
@@ -75,7 +74,7 @@ def get_amazon() -> tuple[str, str]:
 
 
 def get_dowloads_android() -> tuple[str, str]:
-    url = "https://get.delta.chat"
+    url = "https://delta.chat/en/download"
     with session.get(url) as resp:
         soup = BeautifulSoup(resp.text)
     tag = soup.find(attrs={"id": "android"}).find("details").find("a")
@@ -140,12 +139,11 @@ def get_flathub() -> tuple[str, str]:
 
 
 def get_downloads_desktop() -> tuple[str, str]:
-    url = "https://get.delta.chat"
+    url = "https://delta.chat/en/download"
     with session.get(url) as resp:
         soup = BeautifulSoup(resp.text)
     tag = soup.find(attrs={"id": "windows"}).find("details").find("a")
-    prefix = "https://download.delta.chat/desktop/v"
-    version = tag["href"][len(prefix) :].split("/")[0]
+    version = re.search("/v(\d+\.\d+\.\d+)/", tag["href"]).group(1)
     return ("get.delta.chat", version)
 
 

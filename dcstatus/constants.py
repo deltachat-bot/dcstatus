@@ -1,0 +1,3 @@
+"""Constant values"""
+
+UNKNOWN = "unknown"
