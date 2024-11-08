@@ -12,24 +12,17 @@ ORG_URL = "https://raw.githubusercontent.com/deltachat"
 def fetch_changelog(
     url: str, app_regex: Pattern, core_regex: Pattern, count: int
 ) -> list[tuple[str, str]]:
-    versions = []
-    app = ""
-    core = ""
     with session.get(url) as resp:
-        for line in resp.text.splitlines():
-            line = line.strip()
-            if match := app_regex.match(line):
-                if app:
-                    versions.append((app, UNKNOWN))
-                app = match.group("app").strip()
-            if match := core_regex.match(line):
-                core = match.group("core").strip()
-                if app:  # otherwise it is an orphan core from Unreleased section
-                    versions.append((app, core))
-                app = ""
-            if len(versions) >= count:
-                break
-    return versions
+        lines = resp.text.splitlines()
+    versions: list[tuple[str, str]] = []
+    core = UNKNOWN
+    for line in reversed(lines):
+        line = line.strip()
+        if match := app_regex.match(line):
+            versions.insert(0, (match.group("app").strip(), core))
+        if match := core_regex.match(line):
+            core = match.group("core").strip()
+    return versions[:count]
 
 
 def get_android_changelog(count: int) -> list[tuple[str, str]]:
