@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcstatus"
+description = "Bot to get Delta Chat releases status information"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["deltachat", "bot"]
+authors = [
+  {name = "adbenitez", email = "adb@merlinux.eu"},
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+dependencies = [
+    "deltabot-cli>=6.0.0,<7.0",
+    "cachelib>=0.13.0",
+    "requests>=2.32.3",
+    "beautifulsoup4>=4.12.3,<5.0",
+    "playwright>=1.48.0,<2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/deltachat-bot/dcstatus"
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "mypy",
+  "isort",
+  "pylint",
+  "pylama",
+  "pytest",
+  "types-requests",
+]
+
+[project.scripts]
+dcstatus = "dcstatus:main"
+
+[tool.setuptools_scm]
+# can be empty if no extra settings are needed, presence enables setuptools_scm
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = "True"
