@@ -143,7 +143,10 @@ def get_downloads_desktop() -> tuple[str, str]:
     with session.get(url) as resp:
         soup = BeautifulSoup(resp.text)
     tag = soup.find(attrs={"id": "windows"}).find("details").find("a")
-    version = re.search("/v(\d+\.\d+\.\d+)/", tag["href"]).group(1)
+    if match := re.search(r"/v(\d+\.\d+\.\d+)/", tag["href"]):
+        version = match.group(1)
+    else:
+        version = UNKNOWN
     return ("get.delta.chat", version)
 
 
