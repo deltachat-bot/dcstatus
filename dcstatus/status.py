@@ -209,7 +209,11 @@ def get_status(cache: BaseCache) -> str:  # noqa
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table>"
 
-    status += f"<h2>Desktop (🎯{latest_desktop})</h2>"
+    url = (
+        "https://github.com/deltachat/deltachat-desktop/issues"
+        "?q=is%3Aissue+release+progress"
+    )
+    status += f'<h2><a href="{url}">Desktop (🎯{latest_desktop})</a></h2>'
     status += "<table><tr><th>Store</th><th>Version</th></tr>"
     for store, version in get_desktop_stores(cache):
         cls = "green" if version == latest_desktop else "red"
