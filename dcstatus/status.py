@@ -135,9 +135,11 @@ def draw_changelog_table(
 ) -> str:
     table = f"<h2>{header}</h2>"
     table += "<table><tr><th>Release</th><th>Core</th></tr>"
-    for app, core in versions:
+    for index, (app, core) in enumerate(versions):
         if core == latest_core:
             cls = "green"
+        elif index == 0:
+            cls = "red"
         else:
             cls = "red" if core == UNKNOWN else "gray"
         table += f'<tr><td>{app}</td><td class="{cls}">{core}</td>'
