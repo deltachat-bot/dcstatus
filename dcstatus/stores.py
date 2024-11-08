@@ -2,7 +2,6 @@
 
 import json
 import re
-import time
 from typing import Callable
 
 from bs4 import BeautifulSoup
@@ -80,8 +79,7 @@ def get_amazon() -> tuple[str, str]:
     html = get_html(url)
     tries = 0
     while tries < 5 and "Delta Chat" not in html:
-        time.sleep(3)
-        html = get_html(url)
+        html = get_html(url, 3)
         tries += 1
     soup = BeautifulSoup(html)
     version = UNKNOWN
@@ -120,8 +118,12 @@ def get_ios_appstore() -> tuple[str, str]:
 
 def get_microsoft() -> tuple[str, str]:
     url = "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk?activetab=pivot:overviewtab"
-    with session.get(url) as resp:
-        soup = BeautifulSoup(resp.text)
+    html = get_html(url)
+    tries = 0
+    while tries < 5 and "DeltaChat" not in html:
+        html = get_html(url, 3)
+        tries += 1
+    soup = BeautifulSoup(html)
     tag = soup.find(attrs={"telemetry-area-id": "WhatsNewVersion"})
     if tag:
         tag = tag.find(attrs={"class": "card__body"})
