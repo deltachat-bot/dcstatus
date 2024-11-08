@@ -17,7 +17,8 @@ def _get_from_cache(cache: BaseCache, key: str, func: Callable) -> tuple[str, st
     store = cache.get(key)
     if not store:
         store = func()
-        cache.set(key, store)
+        if store[1] != UNKNOWN:
+            cache.set(key, store)
     return store
 
 
