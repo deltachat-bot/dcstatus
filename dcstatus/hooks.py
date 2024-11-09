@@ -68,7 +68,7 @@ def _help(bot: Bot, accid: int, event: NewMsgEvent) -> None:
 def _status(bot: Bot, accid: int, event: NewMsgEvent) -> None:
     bot.rpc.markseen_msgs(accid, [event.msg.id])
     text = "Delta Chat releases status 🚀"
-    html = get_status(cache)
+    html = get_status(cache, bot.logger)
     bot.rpc.send_msg(accid, event.msg.chat_id, MsgData(text=text, html=html))
 
 

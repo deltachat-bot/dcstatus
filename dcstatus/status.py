@@ -1,6 +1,7 @@
 """Generate status page"""
 
 from enum import Enum
+from logging import Logger
 
 from cachelib import BaseCache
 
@@ -173,7 +174,7 @@ def draw_changelog_table(
     return table
 
 
-def get_status(cache: BaseCache) -> str:  # noqa
+def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     debug = "🐞"
     status = '<!doctype html><html><body><head><meta charset="UTF-8"/>'
     status += '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
@@ -199,7 +200,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
         android_changelog.append((app, core))
     latest_android = android_changelog[0][0]
 
-    android_stores = get_android_stores(cache)
+    android_stores = get_android_stores(cache, logger)
     android_github_release = ""
     for store, version in android_stores:
         if store == "GitHub Releases":
@@ -232,7 +233,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
 
     status += f"<h2>iOS 🎯{latest_ios}</h2>"
     status += '<div class="ios-bg"><table><tr><th>Store</th><th>Version</th></tr>'
-    for store, version in get_ios_stores(cache):
+    for store, version in get_ios_stores(cache, logger):
         cls = "green" if version == latest_ios else "red"
         store = f'<a href="{IOS_LINKS[store]}">{store}</a>'
         if version in [data[0] for data in ios_changelog]:
@@ -247,7 +248,7 @@ def get_status(cache: BaseCache) -> str:  # noqa
     )
     status += f'<h2>Desktop 🎯<a href="{url}">{latest_desktop}</a></h2>'
     status += '<div class="desktop-bg"><table><tr><th>Store</th><th>Version</th></tr>'
-    for store, version in get_desktop_stores(cache):
+    for store, version in get_desktop_stores(cache, logger):
         cls = "green" if version == latest_desktop else "red"
         store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
         if version in [data[0] for data in desktop_changelog]:
