@@ -204,26 +204,27 @@ def get_ios_appstore(logger: Logger) -> tuple[str, str]:
 
 
 def get_microsoft(logger: Logger) -> tuple[str, str]:
-    url = "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk?activetab=pivot:overviewtab"
-    html = get_html(logger, url)
-    tries = 0
-    while tries < 5 and "DeltaChat" not in html:
-        html = get_html(logger, url, 3)
-        tries += 1
-    tag = None
-    if "DeltaChat" in html:
-        soup = BeautifulSoup(html, "html.parser")
-        tag = soup.find(attrs={"telemetry-area-id": "WhatsNewVersion"})
-        if tag:
-            tag = tag.find(attrs={"class": "card__body"})
-    if not tag:
-        version = UNKNOWN
+    baseurl = "https://store.rg-adguard.net"
+    url = f"{baseurl}/api/GetFiles"
+    data = {
+        "type": "url",
+        "url": "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk",
+        "ring": "RP",
+        "lang": "en-US",
+    }
+    headers = {"Origin": baseurl, "Referer": baseurl, **session.headers}
+    version = UNKNOWN
+    try:
+        with session.post(url, headers=headers, data=data) as resp:
+            soup = BeautifulSoup(resp.text, "html.parser")
+    except Exception as ex:
+        logger.exception(ex)
     else:
-        version = tag.get_text().strip().lower()
-        regex = r'version (?P<version>\d+\.\d+\.\d+)"'
-        match = re.search(regex, version)
-        version = match.group("version") if match else UNKNOWN
-
+        regex = r"merlinux.DeltaChat_(?P<version>\d+\.\d+\.\d+).*"
+        for link in soup.find("a"):
+            if match := re.match(regex, link.text.strip()):
+                version = match.group("version")
+                break
     return ("Microsoft Store", version)
 
 
