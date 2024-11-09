@@ -25,7 +25,7 @@ def get_html(
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         if cookies is not None:
-            context = browser.new_context()
+            context = browser.new_context(user_agent=session.headers["User-Agent"])
             context.add_cookies(cookies)
         else:
             context = None
@@ -57,14 +57,16 @@ def post(
 ) -> str:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
-        context = browser.new_context(base_url=base_url)
-        api_request_context = context.request
+        context = browser.new_context(
+            base_url=base_url, user_agent=session.headers["User-Agent"]
+        )
         if cookies is not None:
             context.add_cookies(cookies)
         page = context.new_page()
         try:
             page.goto(base_url)
-            response = api_request_context.post(
+            time.sleep(3)
+            response = page.request.post(
                 url, headers=headers, form=form, data=json
             ).body()
         except Exception as ex:
