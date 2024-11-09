@@ -28,6 +28,10 @@ body {
     text-align: center;
 }
 
+:target {
+   background-color: #ffa;
+}
+
 hr {
     border: 0;
     height: 1px;
