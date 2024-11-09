@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from cachelib import BaseCache
 
 from .constants import UNKNOWN
-from .web import get_html, session
+from .web import get_html, post, session
 
 ANDROID_LINKS = {
     "Play Store": "https://play.google.com/store/apps/details?id=chat.delta",
@@ -206,22 +206,20 @@ def get_ios_appstore(logger: Logger) -> tuple[str, str]:
 def get_microsoft(logger: Logger) -> tuple[str, str]:
     baseurl = "https://store.rg-adguard.net"
     url = f"{baseurl}/api/GetFiles"
-    data = {
+    form = {
         "type": "url",
         "url": "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk",
         "ring": "RP",
         "lang": "en-US",
     }
-    headers = {"Origin": baseurl, "Referer": baseurl, **session.headers}
     version = UNKNOWN
     try:
-        with session.post(url, headers=headers, data=data) as resp:
-            soup = BeautifulSoup(resp.text, "html.parser")
+        soup = BeautifulSoup(post(logger, baseurl, url, form=form), "html.parser")
     except Exception as ex:
         logger.exception(ex)
     else:
         regex = r"merlinux.DeltaChat_(?P<version>\d+\.\d+\.\d+).*"
-        for link in soup.find("a"):
+        for link in soup("a"):
             if match := re.match(regex, link.text.strip()):
                 version = match.group("version")
                 break

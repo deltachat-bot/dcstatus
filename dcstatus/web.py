@@ -41,6 +41,39 @@ def get_html(
         if context and cookies is not None:
             cookies.clear()
             cookies.extend(context.cookies())
-            browser.close()
+            context.close()
         browser.close()
     return content
+
+
+def post(
+    logger: Logger,
+    base_url: str,
+    url: str,
+    form: Optional[dict] = None,
+    json: Optional[dict] = None,
+    headers: Optional[dict] = None,
+    cookies: Optional[list[dict]] = None,
+) -> str:
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        context = browser.new_context(base_url=base_url)
+        api_request_context = context.request
+        if cookies is not None:
+            context.add_cookies(cookies)
+        page = context.new_page()
+        try:
+            page.goto(base_url)
+            response = api_request_context.post(
+                url, headers=headers, form=form, data=json
+            ).body()
+        except Exception as ex:
+            logger.exception(ex)
+            response = ""
+
+        if cookies is not None:
+            cookies.clear()
+            cookies.extend(context.cookies())
+        context.close()
+        browser.close()
+    return response
