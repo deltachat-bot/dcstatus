@@ -28,6 +28,12 @@ body {
     text-align: center;
 }
 
+hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
 a {
     color: inherit;
 }
@@ -67,6 +73,10 @@ table tr {
 
 table tr:nth-of-type(even) {
     background-color: #f3f3f3;
+}
+
+table tr:nth-of-type(odd) {
+    background-color: #ffffff;
 }
 
 table tr:last-of-type {
@@ -145,6 +155,7 @@ def draw_changelog_table(
     header: str, versions: list[tuple[str, str]], latest_core: str
 ) -> str:
     table = f"<h2>{header}</h2>"
+    table += f'<div class="{header.lower()}-bg">'
     table += "<table><tr><th>Release</th><th>Core</th></tr>"
     for index, (app, core) in enumerate(versions):
         if core == latest_core:
@@ -153,8 +164,8 @@ def draw_changelog_table(
             cls = "red"
         else:
             cls = "red" if core == UNKNOWN else "gray"
-        table += f'<tr><td>{app}</td><td class="{cls}">{core}</td>'
-    table += "</table>"
+        table += f'<tr><td id="{header.lower()}-{app}">{app}</td><td class="{cls}">{core}</td>'
+    table += "</table></div>"
     return table
 
 
@@ -162,7 +173,19 @@ def get_status(cache: BaseCache) -> str:  # noqa
     debug = "🐞"
     status = '<!doctype html><html><body><head><meta charset="UTF-8"/>'
     status += '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
-    status += f"<style>{STYLES}</style></head>"
+
+    status += f"<style>{STYLES}\n"
+    plt = [Platform.ANDROID, Platform.IOS, Platform.DESKTOP]
+    for platform, emoji in zip(plt, ["🤖", "🍏", "🖥️"]):
+        status += f"""
+        .{platform.value}-bg {{
+            width: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><text y="40" font-size="40" fill="rgba(255, 255, 0, 0.2)" transform="rotate(-45 25 25)">{emoji}</text></svg>');
+            background-repeat: repeat;
+            background-size: 60px 60px;
+        }}
+        """
+    status += "</style></head>"
 
     android_changelog = []
     for app, core in _get_changelog(cache, Platform.ANDROID):
@@ -190,41 +213,48 @@ def get_status(cache: BaseCache) -> str:  # noqa
 
     status += "<h1>App Stores Releases</h1>"
 
-    status += f"<h2>Android (🎯{latest_android})</h2>"
-    status += "<table><tr><th>Store</th><th>Version</th></tr>"
+    status += f"<h2>Android 🎯{latest_android}</h2>"
+    status += '<div class="android-bg"><table><tr><th>Store</th><th>Version</th></tr>'
     for store, version in android_stores:
         cls = "green" if version == latest_android else "red"
         if store == "F-Droid" and cls == "red":
             if android_github_release == latest_android:
                 cls = "yellow"
         store = f'<a href="{ANDROID_LINKS[store]}">{store}</a>'
+        if version in [data[0] for data in android_changelog]:
+            version = f'<a href="#android-{version}">{version}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
-    status += "</table>"
+    status += "</table></div>"
 
-    status += f"<h2>iOS (🎯{latest_ios})</h2>"
-    status += "<table><tr><th>Store</th><th>Version</th></tr>"
+    status += f"<h2>iOS 🎯{latest_ios}</h2>"
+    status += '<div class="ios-bg"><table><tr><th>Store</th><th>Version</th></tr>'
     for store, version in get_ios_stores(cache):
         cls = "green" if version == latest_ios else "red"
         store = f'<a href="{IOS_LINKS[store]}">{store}</a>'
+        if version in [data[0] for data in ios_changelog]:
+            version = f'<a href="#ios-{version}">{version}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
-    status += "</table>"
+    status += "</table></div>"
 
+    latest_desk_ver = _get_changelog(cache, Platform.DESKTOP)[0][0]
     url = (
         "https://github.com/deltachat/deltachat-desktop/issues"
-        "?q=is%3Aissue+release+progress"
+        f"?q=is%3Aissue+release+progress+{latest_desk_ver}"
     )
-    status += f'<h2><a href="{url}">Desktop (🎯{latest_desktop})</a></h2>'
-    status += "<table><tr><th>Store</th><th>Version</th></tr>"
+    status += f'<h2>Desktop 🎯<a href="{url}">{latest_desktop}</a></h2>'
+    status += '<div class="desktop-bg"><table><tr><th>Store</th><th>Version</th></tr>'
     for store, version in get_desktop_stores(cache):
         cls = "green" if version == latest_desktop else "red"
         store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
+        if version in [data[0] for data in desktop_changelog]:
+            version = f'<a href="#desktop-{version}">{version}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table>"
 
-    status += "<h3>3rd Party Packages</h3>"
-    status += _get_desktop_3rdparty(cache)
+    status += "<br/>" + _get_desktop_3rdparty(cache)
+    status += "</div>"
 
-    status += "<h1>Core Versions</h1>"
+    status += "<hr/><h1>🦀 Core Versions</h1>"
 
     latest_core = _get_latest_core(cache)
     status += "<table><tr><td>latest</td>"
