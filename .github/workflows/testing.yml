@@ -17,4 +17,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Delta Chat
-      run: winget install --help
+      run: winget --help
