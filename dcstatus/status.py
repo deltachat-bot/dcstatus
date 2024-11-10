@@ -175,6 +175,12 @@ def draw_changelog_table(
     return table
 
 
+def get_color(version, latest):
+    if version == latest:
+        return "green"
+    return "yellow" if DEBUG in latest else "red"
+
+
 def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status = '<!doctype html><html><body><head><meta charset="UTF-8"/>'
     status += '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
@@ -227,21 +233,23 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += f"<h2>Android {icon}{latest_android}</h2>"
     status += '<div class="android-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in android_stores:
-        cls = "green" if version == latest_android else "red"
+        cls = get_color(version, latest_android)
+        icon = ""
         if store == "F-Droid" and cls == "red":
             if android_github_release == latest_android:
                 cls = "yellow"
+                icon = "⏳"
         store = f'<a href="{ANDROID_LINKS[store]}">{store}</a>'
         if version in [data[0] for data in android_changelog]:
             version = f'<a href="#android-{version}">{version}</a>'
-        status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
+        status += f'<tr><td>{store}</td><td class="{cls}">{icon}{version}</td>'
     status += "</table></div>"
 
     icon = "" if DEBUG in latest_ios else "🚀"
     status += f"<h2>iOS {icon}{latest_ios}</h2>"
     status += '<div class="ios-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in get_ios_stores(cache, logger):
-        cls = "green" if version == latest_ios else "red"
+        cls = get_color(version, latest_ios)
         store = f'<a href="{IOS_LINKS[store]}">{store}</a>'
         if version in [data[0] for data in ios_changelog]:
             version = f'<a href="#ios-{version}">{version}</a>'
@@ -257,7 +265,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += f'<h2>Desktop {icon}<a href="{url}">{latest_desktop}</a></h2>'
     status += '<div class="desktop-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in get_desktop_stores(cache, logger):
-        cls = "green" if version == latest_desktop else "red"
+        cls = get_color(version, latest_desktop)
         store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
         if version in [data[0] for data in desktop_changelog]:
             version = f'<a href="#desktop-{version}">{version}</a>'
