@@ -18,6 +18,8 @@ jobs:
 
     - name: Install Delta Chat
       run: |
+        winget show 9pjtxx7hn3pk
+        winget download 9pjtxx7hn3pk
         winget --help
         echo "Y" | winget install 9pjtxx7hn3pk --source=msstore --disable-interactivity --accept-source-agreements
         Get-ChildItem -Path "$env:TEMP\WinGet"
