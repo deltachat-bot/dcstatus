@@ -17,4 +17,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Delta Chat
-      run: winget --help
+      run: winget install 9pjtxx7hn3pk --disable-interactivity --accept-source-agreements --accept-package-agreements
