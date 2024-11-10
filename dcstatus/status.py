@@ -131,7 +131,7 @@ def _get_changelog(cache: BaseCache, platform: Platform) -> list[tuple[str, str]
             func = get_ios_changelog
         else:
             func = get_desktop_changelog
-        changelog = func(10)
+        changelog = func(15)
         cache.set(cache_key, changelog)
     return changelog
 
@@ -227,7 +227,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         desktop_changelog.append((app, core))
     latest_desktop = desktop_changelog[0][0]
 
-    status += "<h1>App Stores Releases</h1>"
+    status += "<h1>Delta Chat Releases</h1>"
 
     icon = "" if DEBUG in latest_android else "🚀"
     status += f"<h2>Android {icon}{latest_android}</h2>"
