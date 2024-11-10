@@ -3,14 +3,16 @@
 import functools
 import json
 import re
+import time
 from logging import Logger
 from typing import Callable
 
 from bs4 import BeautifulSoup
 from cachelib import BaseCache
+from playwright.sync_api import sync_playwright
 
 from .constants import UNKNOWN
-from .web import get_html, post, session
+from .web import get_html, session
 
 ANDROID_LINKS = {
     "Play Store": "https://play.google.com/store/apps/details?id=chat.delta",
@@ -204,25 +206,37 @@ def get_ios_appstore(logger: Logger) -> tuple[str, str]:
 
 
 def get_microsoft(logger: Logger) -> tuple[str, str]:
-    baseurl = "https://store.rg-adguard.net"
-    url = f"{baseurl}/api/GetFiles"
-    form = {
-        "type": "url",
-        "url": "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk",
-        "ring": "RP",
-        "lang": "en-US",
-    }
+    url = "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk"
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        context = browser.new_context(user_agent=session.headers["User-Agent"])
+        page = context.new_page()
+        page.set_viewport_size({"width": 2640, "height": 1480})
+        try:
+            page.goto("https://store.rg-adguard.net")
+            loc = page.locator("input[type=text]")
+            assert loc.count() > 0
+            loc.scroll_into_view_if_needed()
+            loc.type(url)
+            loc = page.locator('input[type="button"][value="✔"]')
+            assert loc.count() > 0
+            loc.scroll_into_view_if_needed()
+            loc.click()
+            time.sleep(5)
+            response = page.content()
+        except Exception as ex:
+            logger.exception(ex)
+            response = ""
+        context.close()
+        browser.close()
+
     version = UNKNOWN
-    try:
-        soup = BeautifulSoup(post(logger, baseurl, url, form=form), "html.parser")
-    except Exception as ex:
-        logger.exception(ex)
-    else:
-        regex = r"merlinux.DeltaChat_(?P<version>\d+\.\d+\.\d+).*"
-        for link in soup("a"):
-            if match := re.match(regex, link.text.strip()):
-                version = match.group("version")
-                break
+    soup = BeautifulSoup(response, "html.parser")
+    regex = r"merlinux.DeltaChat_(?P<version>\d+\.\d+\.\d+).*"
+    for link in soup("a"):
+        if match := re.match(regex, link.text.strip()):
+            version = match.group("version")
+            break
     return ("Microsoft Store", version)
 
 
