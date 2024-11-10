@@ -18,8 +18,11 @@ jobs:
 
     - name: Install Delta Chat
       run: |
-        winget show 9pjtxx7hn3pk
+        $process = Start-Process -FilePath "winget" -ArgumentList show 9pjtxx7hn3pk" -RedirectStandardInput "input.txt" -NoNewWindow -PassThru
+        Set-Content -Path "input.txt" -Value "Y"
+        $process.WaitForExit()
         winget download 9pjtxx7hn3pk
+        winget show 9pjtxx7hn3pk
         winget --help
         echo "Y" | winget install 9pjtxx7hn3pk --source=msstore
         Get-ChildItem -Path "$env:TEMP\WinGet"
