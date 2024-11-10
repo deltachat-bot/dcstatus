@@ -23,10 +23,7 @@ ANDROID_LINKS = {
 }
 IOS_LINKS = {"App Store": "https://apps.apple.com/us/app/delta-chat/id1459523234"}
 DESKTOP_LINKS = {
-    "Microsoft Store": (
-        "https://www.microsoft.com/en-us/p/deltachat/9pjtxx7hn3pk"
-        "?activetab=pivot:overviewtab"
-    ),
+    "Microsoft Store": "https://apps.microsoft.com/detail/9pjtxx7hn3pk",
     "Mac App Store": "https://apps.apple.com/us/app/delta-chat-desktop/id1462750497",
     "Flathub": "https://flathub.org/apps/chat.delta.desktop",
     "get.delta.chat": "https://get.delta.chat",
