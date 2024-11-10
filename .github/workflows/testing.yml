@@ -18,7 +18,7 @@ jobs:
 
     - name: Install Delta Chat
       run: |
-        $process = Start-Process -FilePath "winget" -ArgumentList show 9pjtxx7hn3pk" -RedirectStandardInput "input.txt" -NoNewWindow -PassThru
+        $process = Start-Process -FilePath "winget" -ArgumentList "show 9pjtxx7hn3pk" -RedirectStandardInput "input.txt" -NoNewWindow -PassThru
         Set-Content -Path "input.txt" -Value "Y"
         $process.WaitForExit()
         winget download 9pjtxx7hn3pk
