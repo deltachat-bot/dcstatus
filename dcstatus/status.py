@@ -22,6 +22,7 @@ from .stores import (
 )
 from .web import session
 
+DEBUG = "🐞"
 STYLES = """
 body {
     font-family: sans-serif;
@@ -60,7 +61,6 @@ table {
 table th {
     background-color: #364e59;
     color: #ffffff;
-    text-align: left;
 }
 
 table th:last-of-type, table td:last-of-type {
@@ -70,6 +70,7 @@ table th:last-of-type, table td:last-of-type {
 table th,
 table td {
     padding: 0.5em;
+    text-align: right;
 }
 
 table tr {
@@ -175,7 +176,6 @@ def draw_changelog_table(
 
 
 def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
-    debug = "🐞"
     status = '<!doctype html><html><body><head><meta charset="UTF-8"/>'
     status += '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
 
@@ -196,7 +196,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     for app, core in _get_changelog(cache, Platform.ANDROID):
         app = app.replace("-", " ")
         if app.split()[-1].lower() == "testrun":
-            app = f"{app.split()[0]}{debug}"
+            app = f"{DEBUG}{app.split()[0]}"
         android_changelog.append((app, core))
     latest_android = android_changelog[0][0]
 
@@ -212,14 +212,15 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     desktop_changelog = []
     for app, core in _get_changelog(cache, Platform.DESKTOP):
         if "." in app and int(app.split(".")[1]) % 2 != 0:
-            app = f"{app}{debug}"
+            app = f"{DEBUG}{app}"
         desktop_changelog.append((app, core))
     latest_desktop = desktop_changelog[0][0]
 
     status += "<h1>App Stores Releases</h1>"
 
-    status += f"<h2>Android 🎯{latest_android}</h2>"
-    status += '<div class="android-bg"><table><tr><th>Store</th><th>Version</th></tr>'
+    icon = "" if DEBUG in latest_android else "🚀"
+    status += f"<h2>Android {icon}{latest_android}</h2>"
+    status += '<div class="android-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in android_stores:
         cls = "green" if version == latest_android else "red"
         if store == "F-Droid" and cls == "red":
@@ -231,8 +232,9 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table></div>"
 
-    status += f"<h2>iOS 🎯{latest_ios}</h2>"
-    status += '<div class="ios-bg"><table><tr><th>Store</th><th>Version</th></tr>'
+    icon = "" if DEBUG in latest_ios else "🚀"
+    status += f"<h2>iOS {icon}{latest_ios}</h2>"
+    status += '<div class="ios-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in get_ios_stores(cache, logger):
         cls = "green" if version == latest_ios else "red"
         store = f'<a href="{IOS_LINKS[store]}">{store}</a>'
@@ -246,8 +248,9 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         "https://github.com/deltachat/deltachat-desktop/issues"
         f"?q=is%3Aissue+release+progress+{latest_desk_ver}"
     )
-    status += f'<h2>Desktop 🎯<a href="{url}">{latest_desktop}</a></h2>'
-    status += '<div class="desktop-bg"><table><tr><th>Store</th><th>Version</th></tr>'
+    icon = "" if DEBUG in latest_desktop else "🚀"
+    status += f'<h2>Desktop {icon}<a href="{url}">{latest_desktop}</a></h2>'
+    status += '<div class="desktop-bg"><table><tr><th></th><th>Version</th></tr>'
     for store, version in get_desktop_stores(cache, logger):
         cls = "green" if version == latest_desktop else "red"
         store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
