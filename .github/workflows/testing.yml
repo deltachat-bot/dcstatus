@@ -19,4 +19,5 @@ jobs:
     - name: Install Delta Chat
       run: |
         winget install 9pjtxx7hn3pk --accept-source-agreements --accept-package-agreements
-        dir %TEMP%\WinGet
+        dir %TEMP%
+        dir %LOCALAPPDATA%\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\TempState\WinGet
