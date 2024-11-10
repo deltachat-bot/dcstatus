@@ -9,6 +9,7 @@ from deltachat2 import Bot, ChatType, CoreEvent, EventType, MsgData, NewMsgEvent
 from rich.logging import RichHandler
 
 from .status import get_status
+from .stores import get_microsoft
 
 cli = BotCli("dcstatus")
 cli.add_generic_option(
@@ -101,8 +102,9 @@ def is_bot(bot: Bot, accid: int, contactid: int) -> bool:
     return bot.rpc.get_contact(accid, contactid).is_bot
 
 
-if __name__ == "__main__":
-    try:
-        cli.start()
-    except KeyboardInterrupt:
-        pass
+def test(_cli, bot, args):
+    """just some example subcommand"""
+    bot.logger.info(get_microsoft(bot.logger))
+
+
+subcmd = cli.add_subcommand(test)
