@@ -19,5 +19,6 @@ jobs:
     - name: Install Delta Chat
       run: |
         winget install 9pjtxx7hn3pk --accept-source-agreements --accept-package-agreements
-        dir "%TEMP%"
-        dir "%TEMP%\WinGet"
+        Get-ChildItem -Path $env:TEMP
+    - run: dir $env:TEMP
+    - run: dir "$env:TEMP\WinGet"
