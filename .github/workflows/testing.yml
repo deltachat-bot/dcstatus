@@ -19,4 +19,4 @@ jobs:
     - name: Install Delta Chat
       run: |
         winget install 9pjtxx7hn3pk --accept-source-agreements --accept-package-agreements
-        deltachat-desktop --version
+        dir %TEMP%\WinGet
