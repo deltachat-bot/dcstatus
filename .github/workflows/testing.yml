@@ -20,5 +20,7 @@ jobs:
       run: |
         winget install 9pjtxx7hn3pk --accept-source-agreements --accept-package-agreements
         Get-ChildItem -Path $env:TEMP
+        Get-ChildItem -Path $env:TEMP\WinGet
+        dir "$env:TEMP\WinGet"
     - run: dir $env:TEMP
     - run: dir "$env:TEMP\WinGet"
