@@ -206,7 +206,12 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         if store == "GitHub Releases":
             android_github_release = version
 
-    ios_changelog = _get_changelog(cache, Platform.IOS)
+    ios_changelog = []
+    for app, core in _get_changelog(cache, Platform.IOS):
+        app = app.replace("-", " ")
+        if app.split()[-1].lower() == "testflight":
+            app = f"{DEBUG}{app.split()[0]}"
+        ios_changelog.append((app, core))
     latest_ios = ios_changelog[0][0]
 
     desktop_changelog = []
