@@ -92,57 +92,67 @@ def get_amazon(logger: Logger, cache: BaseCache) -> tuple[str, str]:
             "name": "csm-hit",
             "value": "tb:1B9QN1VKWF143KC8YWYQ+s-1B9QN1VKWF143KC8YWYQ|1731164139081&t:1731164139081&adb:adblk_no",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "csm-sid",
             "value": "270-2168271-1720160",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "i18n-prefs",
             "value": "USD",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "session-id-time",
             "value": "2082787201l",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "session-id",
             "value": "130-6737246-6226317",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "session-token",
             "value": "KE1PVeb/FM6TXQ1Cc9P5DRCBOHUrT3pHL7VueXmdNDZu95Sf2Xebgwy5oz/Ob+VqM0iQ2h4QPXbSBMXS2PwR4yjJGWH5wOBSQmY+/GNagCQiWU2XGdpIQC/aHFvwFt0A3zCRiBHRfgVcOfpWgtnoopYdP0nGjWyL2oYmrEe86AGrmqkJAIPEqffWh+BV+MSORR8QzEx0dE8zXxv/tWq6pnr8W90Q4mnqMgTx2aR2VRKxEiXnSE+lloDKy8wi9HPT7ES5kOEWHBhYygbQixVIgIjh63wSHzRnW81MYaXDQGFDMo181zs5D1S7ExICtwB0SufTvEuD2HNii27YU3MuPSTKoU2T0Tut",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "sp-cdn",
             "value": '"L5Z9:DE"',
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "ubid-main",
             "value": "134-6517992-6175450",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "x-amz-captcha-1",
             "value": "1731168273651621",
             "domain": "www.amazon.com",
+            "path": "/",
         },
         {
             "name": "x-amz-captcha-2",
             "value": "kUC588sDYrDgqjDcmOX7Bw==",
             "domain": "www.amazon.com",
+            "path": "/",
         },
     ]
-    html = get_html(logger, url)
+    html = get_html(logger, url, cookies=cookies)
     tries = 0
     while tries < 5 and "Delta Chat" not in html:
-        html = get_html(logger, url, 3)
+        html = get_html(logger, url, 3, cookies=cookies)
         tries += 1
     version = UNKNOWN
     if "Delta Chat" in html:
