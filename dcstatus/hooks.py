@@ -27,7 +27,10 @@ def on_init(bot: Bot, args: Namespace) -> None:
     for accid in bot.rpc.get_all_account_ids():
         if not bot.rpc.get_config(accid, "displayname"):
             bot.rpc.set_config(accid, "displayname", "Delta Chat Status")
-            status = "I'm a bot, send /help to me for more info"
+            status = (
+                "I'm a bot, send /help to me for more info.\n\n"
+                "Source Code: https://github.com/deltachat-bot/dcstatus"
+            )
             bot.rpc.set_config(accid, "selfstatus", status)
             bot.rpc.set_config(accid, "delete_device_after", "3600")
 
