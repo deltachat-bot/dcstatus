@@ -49,7 +49,7 @@ def get_desktop_changelog(count: int) -> list[tuple[str, str]]:
     url = f"{ORG_URL}/deltachat-desktop/refs/heads/main/CHANGELOG.md"
     app_regex = re.compile(r"## \[(?P<app>\d+\.\d+\.\d+)\].*")
     core_regex = re.compile(
-        r"(\*|-) update `@deltachat/stdio-rpc-server`.* to `?(?P<core>.+)`",
+        r"(\*|-) (upgrade|update) `@deltachat/stdio-rpc-server`.* to `?(?P<core>.+)`",
         re.IGNORECASE,
     )
     return fetch_changelog(url, app_regex, core_regex, count)
