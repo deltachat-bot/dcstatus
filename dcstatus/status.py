@@ -200,8 +200,8 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
 
     android_changelog = []
     for app, core in _get_changelog(cache, Platform.ANDROID):
-        app = app.replace("-", " ")
-        if app.split()[-1].lower() in ("testrun", "beta"):
+        app = app.replace("-", " ").strip()
+        if len(app.split()) > 1:
             app = f"{DEBUG}{app.split()[0]}"
         android_changelog.append((app, core))
     latest_android = android_changelog[0][0]
@@ -214,16 +214,16 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
 
     ios_changelog = []
     for app, core in _get_changelog(cache, Platform.IOS):
-        app = app.replace("-", " ")
-        if app.split()[-1].lower() == "testflight":
+        app = app.replace("-", " ").strip()
+        if len(app.split()) > 1:
             app = f"{DEBUG}{app.split()[0]}"
         ios_changelog.append((app, core))
     latest_ios = ios_changelog[0][0]
 
     desktop_changelog = []
     for app, core in _get_changelog(cache, Platform.DESKTOP):
-        app = app.replace("-", " ")
-        if app.split()[-1].lower() == "beta":
+        app = app.replace("-", " ").strip()
+        if len(app.split()) > 1:
             app = f"{DEBUG}{app.split()[0]}"
         desktop_changelog.append((app, core))
     latest_desktop = desktop_changelog[0][0]
