@@ -288,12 +288,12 @@ def get_github_desktop(logger: Logger) -> tuple[str, str]:
 
 
 def get_android_stores(cache: BaseCache, logger: Logger) -> list[tuple[str, str]]:
-    _get_amazon = functools.partial(get_amazon, cache=cache)
+    # _get_amazon = functools.partial(get_amazon, cache=cache)
     return [
         _get_from_cache(cache, "android.gplay", get_gplay, logger),
         _get_from_cache(cache, "android.fdroid", get_fdroid, logger),
         _get_from_cache(cache, "android.huawei", get_huawei, logger),
-        _get_from_cache(cache, "android.amazon", _get_amazon, logger),
+        # _get_from_cache(cache, "android.amazon", _get_amazon, logger),
         _get_from_cache(cache, "android.dowloads", get_dowloads_android, logger),
         _get_from_cache(cache, "android.github", get_github_android, logger),
     ]
