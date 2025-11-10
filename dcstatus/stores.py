@@ -1,6 +1,6 @@
 """Data about App stores releases"""
 
-import functools
+# import functools
 import json
 import re
 from logging import Logger
