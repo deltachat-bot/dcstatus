@@ -206,8 +206,12 @@ def get_ios_appstore(logger: Logger) -> tuple[str, str]:
     except Exception as ex:
         logger.exception(ex)
         soup = BeautifulSoup("", "html.parser")
-    tag = soup.find(attrs={"class": "whats-new__latest__version"})
-    version = tag.get_text().strip().split()[-1] if tag else UNKNOWN
+    version = UNKNOWN
+    tag = soup.select_one("#mostRecentVersion article.overview div.metadata h4")
+    if tag:
+        text = tag.get_text().strip()
+        if text.startswith("Version "):
+            version = text.replace("Version ", "")
     return ("App Store", version)
 
 
@@ -229,8 +233,12 @@ def get_macos(logger: Logger) -> tuple[str, str]:
         logger.exception(ex)
         version = UNKNOWN
     else:
-        tag = soup.find(attrs={"class": "whats-new__latest__version"})
-        version = tag.get_text().strip().split()[-1] if tag else UNKNOWN
+        version = UNKNOWN
+        tag = soup.select_one("#mostRecentVersion article.overview div.metadata h4")
+        if tag:
+            text = tag.get_text().strip()
+            if text.startswith("Version "):
+                version = text.replace("Version ", "")
     return ("Mac App Store", version)
 
 
