@@ -157,24 +157,6 @@ def _get_latest_core(cache: BaseCache) -> str:
     return version
 
 
-def draw_changelog_table(
-    header: str, versions: list[tuple[str, str]], latest_core: str
-) -> str:
-    table = f"<h2>{header}</h2>"
-    table += f'<div class="{header.lower()}-bg">'
-    table += "<table><tr><th>Release</th><th>Core</th></tr>"
-    for index, (app, core) in enumerate(versions):
-        if core == latest_core:
-            cls = "green"
-        elif index == 0:
-            cls = "red"
-        else:
-            cls = "red" if core == UNKNOWN else "gray"
-        table += f'<tr><td id="{header.lower()}-{app}">{app}</td><td class="{cls}">{core}</td>'
-    table += "</table></div>"
-    return table
-
-
 def get_color(version, latest):
     if version == latest:
         return "green"
@@ -281,10 +263,6 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     latest_core = _get_latest_core(cache)
     status += "<table><tr><td>latest</td>"
     status += f'<td class="green">{latest_core}</td></tr></table>'
-
-    status += draw_changelog_table("Android", android_changelog, latest_core)
-    status += draw_changelog_table("iOS", ios_changelog, latest_core)
-    status += draw_changelog_table("Desktop", desktop_changelog, latest_core)
 
     status += "</body></html>"
 
