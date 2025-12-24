@@ -16,18 +16,18 @@ from .web import get_html, session
 ANDROID_LINKS = {
     "Play Store": "https://play.google.com/store/apps/details?id=chat.delta",
     "F-Droid": "https://f-droid.org/packages/com.b44t.messenger/",
-    "Huawei App Gallery": "https://url.cloud.huawei.com/pXnbdjuOhW?shareTo=qrcode",
+    "Huawei": "https://url.cloud.huawei.com/pXnbdjuOhW?shareTo=qrcode",
     "Amazon": "https://www.amazon.com/dp/B0864PKVW3/",
-    "get.delta.chat": "https://get.delta.chat",
-    "GitHub Releases": "https://github.com/deltachat/deltachat-android/releases/latest",
+    "delta.chat": "https://get.delta.chat",
+    "GitHub": "https://github.com/deltachat/deltachat-android/releases/latest",
 }
 IOS_LINKS = {"App Store": "https://apps.apple.com/us/app/delta-chat/id1459523234"}
 DESKTOP_LINKS = {
-    "Microsoft Store": "https://apps.microsoft.com/detail/9pjtxx7hn3pk",
-    "Mac App Store": "https://apps.apple.com/us/app/delta-chat-desktop/id1462750497",
+    "Windows": "https://apps.microsoft.com/detail/9pjtxx7hn3pk",
+    "MacOS": "https://apps.apple.com/us/app/delta-chat-desktop/id1462750497",
     "Flathub": "https://flathub.org/apps/chat.delta.desktop",
-    "get.delta.chat": "https://get.delta.chat",
-    "GitHub Releases": "https://github.com/deltachat/deltachat-desktop/releases/latest",
+    "delta.chat": "https://get.delta.chat",
+    "GitHub": "https://github.com/deltachat/deltachat-desktop/releases/latest",
 }
 
 
@@ -81,7 +81,7 @@ def get_huawei(logger: Logger) -> tuple[str, str]:
         if key == "version":
             version = tag.find(attrs={"class": "info_val"}).get_text().strip()
             break
-    return ("Huawei App Gallery", version)
+    return ("Huawei", version)
 
 
 def get_amazon(logger: Logger, cache: BaseCache) -> tuple[str, str]:
@@ -181,7 +181,7 @@ def get_dowloads_android(logger: Logger) -> tuple[str, str]:
         if tag:
             tag = tag.find("a")
     version = tag["href"].split("-")[-1][:-4] if tag else UNKNOWN
-    return ("get.delta.chat", version)
+    return ("delta.chat", version)
 
 
 def get_github_android(logger: Logger) -> tuple[str, str]:
@@ -195,7 +195,7 @@ def get_github_android(logger: Logger) -> tuple[str, str]:
     else:
         if not re.match(r"\d+\.\d+\.\d+", version):
             version = UNKNOWN
-    return ("GitHub Releases", version)
+    return ("GitHub", version)
 
 
 def get_ios_appstore(logger: Logger) -> tuple[str, str]:
@@ -221,7 +221,7 @@ def get_microsoft(logger: Logger) -> tuple[str, str]:
     except Exception as ex:
         logger.exception(ex)
         version = UNKNOWN
-    return ("Microsoft Store", version)
+    return ("Windows", version)
 
 
 def get_macos(logger: Logger) -> tuple[str, str]:
@@ -239,7 +239,7 @@ def get_macos(logger: Logger) -> tuple[str, str]:
             text = tag.get_text().strip()
             if text.startswith("Version "):
                 version = text.replace("Version ", "")
-    return ("Mac App Store", version)
+    return ("MacOS", version)
 
 
 def get_flathub(logger: Logger) -> tuple[str, str]:
@@ -277,7 +277,7 @@ def get_downloads_desktop(logger: Logger) -> tuple[str, str]:
             version = match.group(1)
         else:
             version = UNKNOWN
-    return ("get.delta.chat", version)
+    return ("delta.chat", version)
 
 
 def get_github_desktop(logger: Logger) -> tuple[str, str]:
@@ -292,7 +292,7 @@ def get_github_desktop(logger: Logger) -> tuple[str, str]:
         if not re.match(r"\d+\.\d+\.\d+", version):
             version = UNKNOWN
 
-    return ("GitHub Releases", version)
+    return ("GitHub", version)
 
 
 def get_android_stores(cache: BaseCache, logger: Logger) -> list[tuple[str, str]]:
