@@ -1,8 +1,9 @@
 """Extraction of release versions from CHANGELOG"""
 
 import re
-from cachelib import BaseCache
 from enum import Enum
+
+from cachelib import BaseCache
 
 from .constants import UNKNOWN
 from .web import session
@@ -21,19 +22,19 @@ def get_latest_version(cache: BaseCache, platform: Platform) -> str:
     if version:
         return version
 
-    PRE_URL = "https://raw.githubusercontent.com/"
-    SUF_URL = "refs/heads/main/CHANGELOG.md"
+    pre_url = "https://raw.githubusercontent.com/"
+    suf_url = "refs/heads/main/CHANGELOG.md"
     if platform == Platform.ANDROID:
-        url = f"{PRE_URL}/deltachat/deltachat-android/{SUF_URL}"
+        url = f"{pre_url}/deltachat/deltachat-android/{suf_url}"
         regex = re.compile(r"## v(?P<version>\d+\.\d+\.\d+).*")
     elif platform == Platform.IOS:
-        url = f"{PRE_URL}/deltachat/deltachat-ios/{SUF_URL}"
+        url = f"{pre_url}/deltachat/deltachat-ios/{suf_url}"
         regex = re.compile(r"## v(?P<version>\d+\.\d+\.\d+).*")
     elif platform == Platform.DESKTOP:
-        url = f"{PRE_URL}/deltachat/deltachat-desktop/{SUF_URL}"
+        url = f"{pre_url}/deltachat/deltachat-desktop/{suf_url}"
         regex = re.compile(r"## \[(?P<version>\d+\.\d+\.\d+)\].*")
     else:
-        url = f"{PRE_URL}/chatmail/core/{SUF_URL}"
+        url = f"{pre_url}/chatmail/core/{suf_url}"
         regex = re.compile(r"## \[(?P<version>\d+\.\d+\.\d+)\].*")
 
     with session.get(url) as resp:

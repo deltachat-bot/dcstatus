@@ -4,7 +4,7 @@ from logging import Logger
 
 from cachelib import BaseCache
 
-from .changelog import get_latest_version, Platform
+from .changelog import Platform, get_latest_version
 from .stores import (
     ANDROID_LINKS,
     DESKTOP_LINKS,
@@ -13,7 +13,6 @@ from .stores import (
     get_desktop_stores,
     get_ios_stores,
 )
-from .web import session
 
 STYLES = """
 body {
