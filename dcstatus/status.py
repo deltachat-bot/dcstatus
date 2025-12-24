@@ -89,10 +89,7 @@ table tr:last-of-type {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.2em;
-}
-.cell {
-    flex-grow: 1;
+    gap: 1em;
 }
 """
 PLATFORM_EMOJI = {
@@ -129,7 +126,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += '<div class="row">'
 
     icon = PLATFORM_EMOJI[Platform.ANDROID]
-    status += f'<div class="cell"><h3>Android {latest_android}</h3>'
+    status += f"<div><h3>Android {latest_android}</h3>"
     status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
     for store, version in android_stores:
         cls = get_color(version, latest_android)
@@ -143,7 +140,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += "</table></div>"
 
     icon = PLATFORM_EMOJI[Platform.DESKTOP]
-    status += f'<div class="cell"><h3>Desktop {latest_desktop}</h3>'
+    status += f"<div><h3>Desktop {latest_desktop}</h3>"
     status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
     for store, version in get_desktop_stores(cache, logger):
         cls = get_color(version, latest_desktop)
@@ -155,7 +152,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += '<div class="row">'
 
     icon = PLATFORM_EMOJI[Platform.IOS]
-    status += f'<div class="cell"><h3>iOS {latest_ios}</h3>'
+    status += f"<div><h3>iOS {latest_ios}</h3>"
     status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
     for store, version in get_ios_stores(cache, logger):
         cls = get_color(version, latest_ios)
@@ -164,7 +161,7 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     status += "</table></div>"
 
     icon = PLATFORM_EMOJI[Platform.CORE]
-    status += '<div class="cell"><h3>Chatmail Core</h3>'
+    status += "<div><h3>Chatmail Core</h3>"
     status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
     status += "<tr><td>latest</td>"
     status += f'<td class="green">{latest_core}</td></tr>'
