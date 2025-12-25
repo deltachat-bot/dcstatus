@@ -146,8 +146,18 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         cls = get_color(version, latest_desktop)
         store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
+    for repo in [
+        "arch",
+        "arch_testing",
+        "freebsd",
+        "nix_unstable",
+        "nix_stable_25_05",
+        "manjaro_stable",
+        "scoop",
+        "homebrew_casks",
+    ]:
+        status += f"<tr><td colspan='2'><img style='height: 26px;' src='https://repology.org/badge/version-for-repo/{repo}/deltachat-desktop.svg' alt='Delta Chat Desktop {repo}' /></td></tr>"
     status += "</table></div>"
-
     status += "</div>"
     status += '<div class="row">'
 
