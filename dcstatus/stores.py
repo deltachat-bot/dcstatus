@@ -16,7 +16,7 @@ from .web import get_html, session
 ANDROID_LINKS = {
     "Play Store": "https://play.google.com/store/apps/details?id=chat.delta",
     "F-Droid": "https://f-droid.org/packages/com.b44t.messenger/",
-    "Huawei": "https://url.cloud.huawei.com/pXnbdjuOhW?shareTo=qrcode",
+    "Huawei App Gallery": "https://url.cloud.huawei.com/pXnbdjuOhW?shareTo=qrcode",
     "Amazon": "https://www.amazon.com/dp/B0864PKVW3/",
     "delta.chat": "https://get.delta.chat",
     "GitHub": "https://github.com/deltachat/deltachat-android/releases/latest",
@@ -81,7 +81,7 @@ def get_huawei(logger: Logger) -> tuple[str, str]:
         if key == "version":
             version = tag.find(attrs={"class": "info_val"}).get_text().strip()
             break
-    return ("Huawei", version)
+    return ("Huawei App Gallery", version)
 
 
 def get_amazon(logger: Logger, cache: BaseCache) -> tuple[str, str]:
@@ -293,6 +293,72 @@ def get_github_desktop(logger: Logger) -> tuple[str, str]:
             version = UNKNOWN
 
     return ("GitHub", version)
+
+
+REPOLOGY_SKIP_REPOS = [
+    "aur",
+    "nix_stable_23_05",
+    "nix_stable_23_11",
+    "nix_stable_24_05",
+    "nix_stable_24_11",
+    "nix_stable_25_05",
+    "nix_stable_25_05",
+]
+
+
+def get_repology_desktop(
+    cache: BaseCache,
+    logger: Logger,
+    skip_repos: list[str] | None = None,
+) -> list[tuple[str, str]]:
+    """Fetch and parse deltachat-desktop package info from Repology API.
+
+    Returns:
+        List of (repo_name, version) tuples, filtered by skip_repos.
+    """
+    if skip_repos is None:
+        skip_repos = REPOLOGY_SKIP_REPOS
+
+    cache_key = "desktop.repology"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    url = "https://repology.org/api/v1/project/deltachat-desktop"
+    try:
+        with session.get(url) as resp:
+            resp.raise_for_status()
+            data = resp.json()
+    except Exception as ex:
+        logger.exception("REPOLOGY: error fetching: %s", ex)
+        return []
+
+    repo_versions: dict[str, str] = {}
+    for entry in data:
+        repo = entry.get("repo", UNKNOWN)
+        if repo in skip_repos:
+            continue
+        version = entry.get("version", UNKNOWN)
+        # only keep highest version per repo (slackbuilds appears twice)
+        if repo not in repo_versions or _version_tuple(version) > _version_tuple(
+            repo_versions[repo]
+        ):
+            repo_versions[repo] = version
+
+    results = list(repo_versions.items())
+    cache.set(cache_key, results)
+    return results
+
+
+def _version_tuple(version: str) -> tuple:
+    """Convert version string to tuple for comparison."""
+    parts: list[tuple[int, int | str]] = []
+    for part in re.split(r"[.\-_]", version):
+        try:
+            parts.append((0, int(part)))
+        except ValueError:
+            parts.append((1, part))
+    return tuple(parts)
 
 
 def get_android_stores(cache: BaseCache, logger: Logger) -> list[tuple[str, str]]:

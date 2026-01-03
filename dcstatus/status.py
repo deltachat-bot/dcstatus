@@ -12,6 +12,7 @@ from .stores import (
     get_android_stores,
     get_desktop_stores,
     get_ios_stores,
+    get_repology_desktop,
 )
 
 STYLES = """
@@ -24,6 +25,7 @@ body {
 a {
     color: inherit;
 }
+
 
 table {
     border-collapse: collapse;
@@ -91,6 +93,7 @@ table tr:last-of-type {
     justify-content: center;
     gap: 1em;
 }
+
 """
 PLATFORM_EMOJI = {
     Platform.ANDROID: "🤖",
@@ -117,6 +120,17 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
     latest_ios = get_latest_version(cache, Platform.IOS)
     latest_android = get_latest_version(cache, Platform.ANDROID)
 
+    status += '<div class="row">'
+
+    icon = PLATFORM_EMOJI[Platform.CORE]
+    status += "<div><h3>Chatmail Core</h3>"
+    status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
+    status += "<tr><td>latest</td>"
+    status += f'<td class="green">{latest_core}</td></tr>'
+    status += "</table></div>"
+
+    status += "</div>"
+
     android_stores = get_android_stores(cache, logger)
     android_github = ""
     for store, version in android_stores:
@@ -139,18 +153,6 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         status += f'<tr><td>{store}</td><td class="{cls}">{icon}{version}</td>'
     status += "</table></div>"
 
-    icon = PLATFORM_EMOJI[Platform.DESKTOP]
-    status += f"<div><h3>Desktop {latest_desktop}</h3>"
-    status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
-    for store, version in get_desktop_stores(cache, logger):
-        cls = get_color(version, latest_desktop)
-        store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
-        status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
-    status += "</table></div>"
-
-    status += "</div>"
-    status += '<div class="row">'
-
     icon = PLATFORM_EMOJI[Platform.IOS]
     status += f"<div><h3>iOS {latest_ios}</h3>"
     status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
@@ -160,13 +162,19 @@ def get_status(cache: BaseCache, logger: Logger) -> str:  # noqa
         status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
     status += "</table></div>"
 
-    icon = PLATFORM_EMOJI[Platform.CORE]
-    status += "<div><h3>Chatmail Core</h3>"
-    status += f"<table><tr><th>{icon}</th><th>Version</th></tr>"
-    status += "<tr><td>latest</td>"
-    status += f'<td class="green">{latest_core}</td></tr>'
+    icon = PLATFORM_EMOJI[Platform.DESKTOP]
+    status += f"<div><h3>Desktop {latest_desktop}</h3>"
+    status += f"<table style='width: 220px;'><tr><th>{icon}</th><th>Version</th></tr>"
+    for store, version in get_desktop_stores(cache, logger):
+        cls = get_color(version, latest_desktop)
+        store = f'<a href="{DESKTOP_LINKS[store]}">{store}</a>'
+        status += f'<tr><td>{store}</td><td class="{cls}">{version}</td>'
+    status += '<tr><th colspan="2" style="text-align: right;">3rd Party Repositories</th></tr>'
+    for repo, version in get_repology_desktop(cache, logger):
+        cls = get_color(version, latest_desktop)
+        repo_link = f'<a href="https://repology.org/project/deltachat-desktop/versions">{repo}</a>'
+        status += f'<tr><td>{repo_link}</td><td class="{cls}">{version}</td>'
     status += "</table></div>"
-
     status += "</div>"
     status += "</body></html>"
 
