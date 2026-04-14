@@ -23,7 +23,7 @@ playwright install
 Configure the bot:
 
 ```sh
-dcstatus init bot@example.com PASSWORD
+dcstatus init dcaccount:nine.testrun.org
 ```
 
 Start the bot:
