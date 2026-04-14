@@ -663,9 +663,9 @@ WUID_REQ = """<Envelope  xmlns="http://www.w3.org/2003/05/soap-envelope" xmlns:a
                         <XmlUpdateFragmentType>Extended</XmlUpdateFragmentType>
                     </XmlUpdateFragmentTypes>
                 </ExtendedUpdateInfoParameters>
-				<ProductsParameters>
-					<DeviceAttributes>FlightRing={2};</DeviceAttributes>
-				</ProductsParameters>
+                <ProductsParameters>
+                    <DeviceAttributes>FlightRing={2};</DeviceAttributes>
+                </ProductsParameters>
             </parameters>
         </SyncUpdates>
     </Body>

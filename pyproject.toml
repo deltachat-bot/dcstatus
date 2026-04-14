@@ -31,11 +31,8 @@ Homepage = "https://github.com/deltachat-bot/dcstatus"
 [project.optional-dependencies]
 dev = [
   "black",
-  "mypy",
   "isort",
-  "pylint",
-  "pylama",
-  "pytest",
+  "prospector[with-mypy]",
   "types-requests",
 ]
 
